@@ -1,0 +1,37 @@
+{
+    "name": "HVR.UGC.Editor",
+    "rootNamespace": "",
+    "references": [
+        "HVR.UGC",
+        "nadena.dev.ndmf",
+        "com.gator-dragon-games.jigglephysics"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+    ],
+    "versionDefines": [
+        {
+            "define": "HVR_NDMF",
+            "name": "nadena.dev.ndmf",
+            "expression": "1.10.1"
+        },
+        {
+            "name": "com.gator-dragon-games.jigglephysics",
+            "expression": "15.0.3",
+            "define": "HVR_HAS_JIGGLEPHYSICS"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "",
+            "define": "HVR_IS_INSTALLED_IN_A_VRC_PROJECT"
+        }
+    ],
+    "noEngineReferences": false
+}

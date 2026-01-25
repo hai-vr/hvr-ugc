@@ -1,0 +1,27 @@
+{
+    "name": "HVR.UGC",
+    "rootNamespace": "",
+    "references": [
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+    ],
+    "versionDefines": [
+        {
+            "name": "com.gator-dragon-games.jigglephysics",
+            "expression": "15.0.3",
+            "define": "HVR_HAS_JIGGLEPHYSICS"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "",
+            "define": "HVR_IS_INSTALLED_IN_A_VRC_PROJECT"
+        }
+    ],
+    "noEngineReferences": false
+}
