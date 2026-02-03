@@ -18,6 +18,7 @@ namespace HVR.UGC
             typeof(Transform),
             // UGC
             typeof(HVRUGCAvatar),
+            typeof(HVRUGCBelonging),
             // Renderers
             typeof(SkinnedMeshRenderer),
             typeof(MeshRenderer),

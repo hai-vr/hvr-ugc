@@ -1,14 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace HVR.UGC
 {
     /// Represents a humanoid avatar, which may be worn by a person or used as an NPC.
+    [HelpURL("https://docs.hai-vr.dev/docs/hvr/ugc/avatar")]
     [AddComponentMenu("HVR/UGC/HVRUGC Avatar")]
     public class HVRUGCAvatar : MonoBehaviour
 #if HVR_IS_INSTALLED_IN_A_VRC_PROJECT
         , VRC.SDKBase.IEditorOnly
 #endif
     {
+        private const string ViewpointDefaultObjectName = "HVRViewpoint";
         public string avatarName;
         public string avatarBase;
         public Transform viewpoint;
@@ -16,7 +19,8 @@ namespace HVR.UGC
 
         public bool bypassRestrictions; // For debug purposes. If true, this does not remove components from the object.
 
-        public SkinnedMeshRenderer[] collisionMeshes = new SkinnedMeshRenderer[0];
+        public SkinnedMeshRenderer[] collisionMeshes = Array.Empty<SkinnedMeshRenderer>();
+        public HVRUGCCollisionMeshBlendshape[] collisionMeshBlendshapes = Array.Empty<HVRUGCCollisionMeshBlendshape>();
         
         public event FullyInitialized OnFullyInitialized;
         public delegate void FullyInitialized(HVRUGCAvatar avatar);
@@ -26,8 +30,14 @@ namespace HVR.UGC
         {
             // This is a UGC component, so the fields should not be trusted.
             collisionMeshes = HVRUGCUtil.SlowSanitizeEndUserProvidedObjectArray(collisionMeshes);
+            collisionMeshBlendshapes ??= Array.Empty<HVRUGCCollisionMeshBlendshape>();
+
+            var animator = gameObject.GetComponent<Animator>();
+            if (viewpoint == null)
+            {
+                viewpoint = GenerateViewpoint(this, animator != null).transform;
+            }
             
-            var animator = GetComponent<Animator>();
             if (viewpoint != null && animator != null)
             {
                 var headTransform = animator.GetBoneTransform(HumanBodyBones.Head);
@@ -77,5 +87,31 @@ namespace HVR.UGC
 
             return top - bottom;
         }
+
+        public static GameObject GenerateViewpoint(HVRUGCAvatar my, bool hasAnimator)
+        {
+            var defaultPos = my.transform.position + Vector3.up * 1.1f;
+            var worldPos = hasAnimator
+                ? ((my.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.LeftEye)?.position??defaultPos) + Vector3.forward * 0.05f)
+                : defaultPos;
+            worldPos.x = my.transform.position.x;
+                        
+            var newViewpoint = new GameObject(ViewpointDefaultObjectName)
+            {
+                transform =
+                {
+                    parent = my.transform,
+                    position = worldPos,
+                }
+            };
+            return newViewpoint;
+        }
+    }
+
+    [Serializable]
+    public struct HVRUGCCollisionMeshBlendshape
+    {
+        public string blendshapeName;
+        public float weight;
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HVR.UGC.Editor
 {
-    public static class HVRPrecalculated
+    internal static class HVRPrecalculated
     {
         public static void PrecalculateCollisionMeshes(GameObject copy)
         {

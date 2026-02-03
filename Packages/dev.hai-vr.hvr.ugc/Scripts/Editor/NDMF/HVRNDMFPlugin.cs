@@ -2,6 +2,7 @@
 using HVR.UGC.Editor;
 using nadena.dev.ndmf;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 [assembly: ExportsPlugin(typeof(HVRNDMFPlugin))]
 namespace HVR.UGC.Editor
@@ -32,7 +33,13 @@ namespace HVR.UGC.Editor
                 
                 var jiggleUpdateExists = Object.FindAnyObjectByType<GatorDragonGames.JigglePhysics.JiggleUpdateExample>(FindObjectsInactive.Include) != null;
                 if (jiggleUpdateExists) return;
+
+                var initTypeExists = HVREditorUtil.TryGetTypeByFullName(HVRUGCHardcodedTypeNames.HVRInitializer, out var initializerType);
+                if (initTypeExists && Object.FindAnyObjectByType(initializerType, FindObjectsInactive.Include) != null) return;
                 
+                var jiggleUpdateTypeExists = HVREditorUtil.TryGetTypeByFullName(HVRUGCHardcodedTypeNames.HVRJiggleUpdate, out var jiggleUpdateType);
+                if (jiggleUpdateTypeExists && Object.FindAnyObjectByType(jiggleUpdateType, FindObjectsInactive.Include) != null) return;
+
                 HVRUGCLogging.Log(this, "JiggleRig might not be able to run in Play Mode, as there is no HVRSystems initialized in the scene, and also there is no JiggleUpdateExample in the scene. We will create one.");
                 HVRUGCUtil.UGC_NewDisabledObjectWithComponent<GatorDragonGames.JigglePhysics.JiggleUpdateExample>("HVRNDMF-JiggleRigHelper", null)
                     .gameObject.SetActive(true);

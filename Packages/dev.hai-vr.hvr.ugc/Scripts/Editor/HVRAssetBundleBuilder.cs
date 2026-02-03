@@ -10,9 +10,9 @@ using nadena.dev.ndmf;
 
 namespace HVR.UGC.Editor
 {
-    public class HVRAssetBundleBuilder
+    internal class HVRAssetBundleBuilder
     {
-        public static string PrepareAndBuildAssetBundle(GameObject original, string prefabGameObjectName, string assetBundleName, bool doNotSanitizeComponents)
+        public static string PrepareAndBuildAssetBundle(GameObject original, string prefabGameObjectName, string assetBundleName, HVRBundleType bundleType, bool doNotSanitizeComponents)
         {
             if (assetBundleName != HVRUGCUtil.SanitizeAssetBundleFileName(assetBundleName))
             {
@@ -26,19 +26,25 @@ namespace HVR.UGC.Editor
                 copy = Object.Instantiate(original).gameObject;
                 copy.SetActive(true);
 
+                if (bundleType == HVRBundleType.Avatar)
+                {
 #if HVR_NDMF
-                AvatarProcessor.ProcessAvatar(copy, HVRPlatform.Instance);
+                    AvatarProcessor.ProcessAvatar(copy, HVRPlatform.Instance);
 #endif
+                }
 
                 if (!doNotSanitizeComponents)
                 {
                     HVRAssetBundleSanitization.PreInstantiateSanitize(copy);
                 }
                 Scrub(copy);
-                
-                // TODO: This does nothing for now.
-                HVRPrecalculated.PrecalculateCollisionMeshes(copy);
-                
+
+                if (bundleType == HVRBundleType.Avatar)
+                {
+                    // TODO: This does nothing for now.
+                    HVRPrecalculated.PrecalculateCollisionMeshes(copy);
+                }
+
                 PrefabUtility.SaveAsPrefabAsset(copy, tempPrefabPath);
 
                 return CreateAssetBundle(tempPrefabPath, assetBundleName);
@@ -111,5 +117,11 @@ namespace HVR.UGC.Editor
                 }
             }
         }
+    }
+
+    internal enum HVRBundleType
+    {
+        Avatar,
+        Belonging,
     }
 }
